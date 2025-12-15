@@ -1,0 +1,39 @@
+{
+    "name": "excel-sorter-tool",
+    "version": "1.0.0",
+    "description": "Tool to sort excel files based on FID",
+    "author": "User",
+    "main": "electron.js",
+    "scripts": {
+        "start": "node server/index.js",
+        "generate-data": "node scripts/generate_data.js",
+        "client:build": "cd client && npm install && npm run build",
+        "electron:dev": "electron .",
+        "dist": "npm run client:build && electron-builder"
+    },
+    "build": {
+        "appId": "com.excelsorter.tool",
+        "productName": "Excel Sorter Tool",
+        "directories": {
+            "output": "dist"
+        },
+        "files": [
+            "electron.js",
+            "server/**/*",
+            "client/dist/**/*",
+            "package.json"
+        ]
+    },
+    "dependencies": {
+        "cors": "^2.8.5",
+        "express": "^4.18.2",
+        "open": "^8.4.2",
+        "xlsx": "^0.18.5"
+    },
+    "devDependencies": {
+        "concurrently": "^9.2.1",
+        "cross-env": "^10.1.0",
+        "electron": "^39.2.7",
+        "electron-builder": "^26.0.12"
+    }
+}
