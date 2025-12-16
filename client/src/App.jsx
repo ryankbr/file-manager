@@ -88,7 +88,7 @@ function App() {
         <div style={{ textAlign: 'left' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
             <strong>Folder: {folderPath}</strong>
-            <button onClick={handleBrowse} style={{ fontSize: '0.8em', padding: '5px 10px' }}>Change</button>
+            <button onClick={handleBrowse} className="secondary-btn" style={{ fontSize: '0.8em', padding: '5px 10px' }}>Change</button>
           </div>
 
           <div style={{ marginBottom: '15px', display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -115,12 +115,14 @@ function App() {
                 </div>
 
                 {results ? (
-                  <span className={results[i]?.status.includes('Success') ? 'status-success' : 'status-error'}>
-                    {results[i]?.status}
+                  <span className={`status-badge ${results[i]?.status.includes('Success') ? 'status-success' : 'status-error'}`}>
+                    {results[i]?.status === 'Success' ? 'Sorted' : results[i]?.status}
                   </span>
                 ) : (
-                  <span className={f.status === 'Ready' ? 'status-ready' : (f.status === 'Already Sorted' ? 'status-success' : 'status-error')}>
-                    {f.status === 'Ready' ? `FID: ${f.fid} | Name: ${f.name}` : f.status}
+                  <span className={`status-badge ${f.status === 'Ready' ? 'status-ready' :
+                    (f.status === 'Already Sorted' ? 'status-success' : 'status-error')
+                    }`}>
+                    {f.status === 'Ready' ? `FID: ${f.fid}` : f.status}
                   </span>
                 )}
               </div>

@@ -37,18 +37,11 @@ function FileExplorer({ isOpen, onClose, onSelect, initialPath }) {
     };
 
     const handleDirClick = (dirName) => {
-        // Construct new path. 
-        // Note: This simple concatenation might fail on Windows if not handled carefully, 
-        // but the backend returns absolute paths so we should rely on backend to resolve?
-        // Actually, we need to send the new path to backend.
-        // Let's assume standard separator.
         const separator = currentPath.includes('\\') ? '\\' : '/';
         const newPath = currentPath.endsWith(separator)
             ? currentPath + dirName
             : currentPath + separator + dirName;
 
-        // Better: Just send the new path to loadDirs, let backend handle normalization if needed?
-        // But we need to construct it here to send it.
         loadDirs(newPath);
     };
 
@@ -56,6 +49,28 @@ function FileExplorer({ isOpen, onClose, onSelect, initialPath }) {
         if (parentPath) {
             loadDirs(parentPath);
         }
+    };
+
+    // Helper to format path for display (breadcrumbs style)
+    const formatPath = (path) => {
+        if (!path) return null;
+        // Normalize separators
+        const parts = path.split(/[/\\]/).filter(p => p);
+        // Show last 3 parts if too long
+        const displayParts = parts.length > 3 ? ['...', ...parts.slice(-3)] : parts;
+
+        return (
+            <>
+                {displayParts.map((part, i) => (
+                    <span key={i}>
+                        <span className={`path-segment ${i === displayParts.length - 1 ? 'active' : ''}`}>
+                            {part}
+                        </span>
+                        {i < displayParts.length - 1 && <span className="path-separator">/</span>}
+                    </span>
+                ))}
+            </>
+        );
     };
 
     if (!isOpen) return null;
@@ -69,11 +84,11 @@ function FileExplorer({ isOpen, onClose, onSelect, initialPath }) {
                 </div>
 
                 <div className="explorer-nav">
-                    <button onClick={handleUp} disabled={!parentPath} className="nav-btn">
-                        ↑ Up
+                    <button onClick={handleUp} disabled={!parentPath} className="secondary-btn back-btn" title="Go to parent directory">
+                        <span style={{ fontSize: '1.2em' }}>←</span> Back
                     </button>
                     <div className="path-display">
-                        {currentPath || "Loading..."}
+                        {currentPath ? formatPath(currentPath) : "Loading..."}
                     </div>
                 </div>
 
@@ -82,9 +97,10 @@ function FileExplorer({ isOpen, onClose, onSelect, initialPath }) {
                     {error && <div className="error-msg">{error}</div>}
 
                     {!loading && !error && dirs.map(dir => (
-                        <div key={dir} className="explorer-item" onDoubleClick={() => handleDirClick(dir)}>
+                        <div key={dir} className="explorer-item" onClick={() => handleDirClick(dir)}>
                             <span className="folder-icon">📁</span>
                             <span className="folder-name">{dir}</span>
+                            <span style={{ opacity: 0.3, fontSize: '1.2em' }}>›</span>
                         </div>
                     ))}
 
